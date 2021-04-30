@@ -48,3 +48,30 @@ jobs:
           tags: |
             rodolfohok/api-bootcamp-produto:latest
             rodolfohok/api-bootcamp-produto:${{github.run_number}}
+  CD:
+    runs-on: ubuntu-latest
+    needs: [CI]
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Kubernetes set context
+        uses: Azure/k8s-set-context@v1
+        with:
+          # Acceptable values: kubeconfig or service-account
+          method: kubeconfig
+          # Kubernetes Config
+          kubeconfig: ${{secrets.K8S_CONFIG}}
+          
+      - name: Deploy to Kubernetes cluster MongoDB
+        uses: Azure/k8s-deploy@v1.3
+        with:
+          # Path to the manifest files which will be used for deployment.
+          manifests: |
+            k8s/mongodb/deployment.yaml
+            k8s/mongodb/service.yaml
+      
+      - name: Deploy to Kubernetes cluster
+        uses: Azure/k8s-deploy@v1.3
+        with:
+          # Path to the manifest files which will be used for deployment.
+          manifests: k8s/api/deployment.yaml
