@@ -73,6 +73,8 @@ jobs:
       - name: Deploy to Kubernetes cluster WebApi
         uses: Azure/k8s-deploy@v1.3
         with:
+          # Fully qualified resource URL of the image(s) to be used for substitutions on the manifest files Example: contosodemo.azurecr.io/helloworld:test
+          images: rodolfohok/api-bootcamp-produto:${{github.run_number}}
           # Path to the manifest files which will be used for deployment.
           manifests: | 
             k8s/api/deployment.yaml
